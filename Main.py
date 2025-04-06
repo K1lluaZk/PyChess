@@ -12,6 +12,7 @@ SQUARE_SIZE = WIDTH // COLS
 #Set up colors
 WHITE = (232, 235, 239)
 BLACK = (125, 135, 150)
+HIGHLIGHT = (0, 255, 0, 100) 
 
 #Create the display window
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -38,6 +39,50 @@ board = [
     ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']
 ]
 
+#Function to get the valid moves for the piece wp
+def MovesforWhitespawn(tablero, fila, columna):
+    moves = []
+
+    #Move forward if free
+    if fila > 0 and tablero[fila - 1][columna] == '':
+        moves.append((fila - 1, columna))
+
+        #Move two if it's in the start row
+        if fila == 6 and tablero[fila - 2][columna] == '':
+            moves.append((fila - 2, columna))
+
+    #Eating on the left diagonal
+    if fila > 0 and columna > 0 and tablero[fila - 1][columna - 1].startswith('b'):
+        moves.append((fila - 1, columna - 1))
+
+    #Eat diagonally right
+    if fila > 0 and columna < 7 and tablero[fila - 1][columna + 1].startswith('b'):
+        moves.append((fila - 1, columna + 1))
+
+    return moves
+
+#Function to get the valid moves for the piece bp
+def MovesforBlackpawn(tablero, fila, columna):
+    moves = []
+
+    #Move forward if free
+    if fila < 7 and tablero[fila + 1][columna] == '':
+        moves.append((fila + 1, columna))
+
+        #Move two if it's in the start row
+        if fila == 1 and tablero[fila + 2][columna] == '':
+            moves.append((fila + 2, columna))
+
+    #Eating on the left diagonal
+    if fila < 7 and columna < 7 and tablero[fila + 1][columna + 1].startswith('w'):
+        moves.append((fila + 1, columna + 1))
+
+    #Eat diagonally right
+    if fila < 7 and columna > 0 and tablero[fila + 1][columna - 1].startswith('w'):
+        moves.append((fila + 1, columna - 1))
+
+    return moves
+
 
 #Draw the chessboard
 def draw_board(win):
@@ -56,16 +101,31 @@ def draw_pieces(win, board):
             piece = board[row][col]
             if piece != '':
                 win.blit(pieces[piece], (col*SQUARE_SIZE, row*SQUARE_SIZE))
+ 
+ 
+ 
+#Draw valid moves                
+def draw_valid_moves(win, moves):
+    surface = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE), pygame.SRCALPHA)
+    surface.fill(HIGHLIGHT)
+    for move in moves:
+        row, col = move
+        win.blit(surface, (col*SQUARE_SIZE, row*SQUARE_SIZE))               
+                
+
+
 
 #Main logic of the game
 def main():
     selected = None
+    valid_moves = []
     run = True
     clock = pygame.time.Clock()
 
     while run:
         clock.tick(60)
         draw_board(WIN)
+        draw_valid_moves(WIN, valid_moves)
         draw_pieces(WIN, board)
         pygame.display.update()
 
@@ -81,11 +141,23 @@ def main():
                 if selected:
                     prev_row, prev_col = selected
                     piece = board[prev_row][prev_col]
-                    board[prev_row][prev_col] = ''
-                    board[row][col] = piece
+
+                    if (row, col) in valid_moves:
+                        board[row][col] = piece
+                        board[prev_row][prev_col] = ''
+                    
                     selected = None
+                    valid_moves = []
+
                 elif board[row][col] != '':
-                    selected = (row, col)
+                    piece = board[row][col]
+                    if piece == 'wp':
+                        selected = (row, col)
+                        valid_moves = MovesforWhitespawn(board, row, col)
+
+                    if piece == 'bp':
+                        selected = (row, col)
+                        valid_moves = MovesforBlackpawn(board, row, col)
 
     pygame.quit()
 
