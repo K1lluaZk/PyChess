@@ -62,7 +62,7 @@ def MovesforWhitespawn(tablero, fila, columna):
     return moves
 
 #Function to get the valid moves for the piece bp
-def MovesforBlackpawn(tablero, fila, columna):
+def MovesforBlackspawn(tablero, fila, columna):
     moves = []
 
     #Move forward if free
@@ -131,9 +131,8 @@ def MovesforWhitesrook(tablero, fila, columna):
     return moves
 
 
-
 #Function to get the valid moves for the piece br
-def MovesforBlackrook(tablero, fila, columna):
+def MovesforBlacksrook(tablero, fila, columna):
     moves = []
 
     # Move up (fila - 1)
@@ -178,8 +177,53 @@ def MovesforBlackrook(tablero, fila, columna):
 
     return moves
 
+#Function to get the valid moves for the piece wn
+def MovesforWhiteshorse(tablero, fila, columna):
+    moves = []
+    
+    # Moves valids for the horse
+    valid_moves = [
+        (-2, -1), (-2, 1),
+        (-1, -2), (-1, 2),
+        (1, -2), (1, 2),
+        (2, -1), (2, 1)
+    ]
+    
+    for move in valid_moves:
+        new_row = fila + move[0]
+        new_col = columna + move[1]
+        
+        if 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+            
+            if casilla == '' or casilla.startswith('b'):
+                moves.append((new_row, new_col))
+    
+    return moves
 
-
+#Function to get the valid moves for the piece bn
+def MovesforBlackshorse(tablero, fila, columna):
+    moves = []
+    
+    # Moves valids for the horse
+    valid_moves = [
+        (-2, -1), (-2, 1),
+        (-1, -2), (-1, 2),
+        (1, -2), (1, 2),
+        (2, -1), (2, 1)
+    ]
+    
+    for move in valid_moves:
+        new_row = fila + move[0]
+        new_col = columna + move[1]
+        
+        if 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+            
+            if casilla == '' or casilla.startswith('w'):
+                moves.append((new_row, new_col))
+    
+    return moves
 
 
 
@@ -258,7 +302,7 @@ def main():
 
                     if piece == 'bp':
                         selected = (row, col)
-                        valid_moves = MovesforBlackpawn(board, row, col)
+                        valid_moves = MovesforBlackspawn(board, row, col)
                         
                         
                     if piece == 'wr':
@@ -267,8 +311,15 @@ def main():
                         
                     if piece == 'br':
                         selected = (row, col)
-                        valid_moves = MovesforBlackrook(board, row, col)    
+                        valid_moves = MovesforBlacksrook(board, row, col)    
+                    
+                    if piece == 'wn':
+                        selected = (row, col)
+                        valid_moves = MovesforWhiteshorse(board, row, col)
                         
+                    if piece == 'bn':
+                        selected = (row, col)
+                        valid_moves = MovesforBlackshorse(board, row, col)               
                         
 
     pygame.quit()
