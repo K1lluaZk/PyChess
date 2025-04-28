@@ -282,6 +282,19 @@ def MovesforBlacksbishop(tablero, fila, columna):
     return moves
 
 
+def MovesforWhitesqueen(tablero, fila, columna):
+    moves = []
+    moves += MovesforWhitesbishop(tablero, fila, columna)
+    moves += MovesforWhitesrook(tablero, fila, columna)
+    return moves
+
+def MovesforBlacksqueen(tablero, fila, columna):
+    moves = []
+    moves += MovesforBlacksbishop(tablero, fila, columna)
+    moves += MovesforBlacksrook(tablero, fila, columna)
+    return moves
+
+
 
 
 
@@ -385,7 +398,14 @@ def main():
                     if piece == 'bb':
                         selected = (row, col)
                         valid_moves = MovesforBlacksbishop(board, row, col)               
-                        
+                    
+                    if piece == 'wq':
+                        selected = (row, col)
+                        valid_moves = MovesforWhitesqueen(board, row, col)               
+                    
+                    if piece == 'bq':
+                        selected = (row, col)
+                        valid_moves = MovesforBlacksqueen(board, row, col)           
 
     pygame.quit()
 
