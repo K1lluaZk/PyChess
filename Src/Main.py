@@ -226,6 +226,63 @@ def MovesforBlackshorse(tablero, fila, columna):
     return moves
 
 
+#Function to get the valid moves for the piece wb
+def MovesforWhitesbishop(tablero, fila, columna):
+    moves = []
+    
+    # Moves valids (Diagonal directions)
+    valid_moves = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  
+
+    for dir in valid_moves:
+        new_row= fila + dir[0]
+        new_col = columna + dir[1]
+
+        while 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+
+            if casilla == '':
+                moves.append((new_row, new_col))
+            elif casilla.startswith('b'):  
+                moves.append((new_row, new_col))
+                break  
+            else:  
+                break  
+
+            new_row += dir[0]
+            new_col += dir[1]
+
+    return moves
+
+
+#Function to get the valid moves for the piece bb
+def MovesforBlacksbishop(tablero, fila, columna):
+    moves = []
+    
+    # Moves valids (Diagonal directions)
+    valid_moves = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  
+
+    for dir in valid_moves:
+        new_row= fila + dir[0]
+        new_col = columna + dir[1]
+
+        while 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+
+            if casilla == '':
+                moves.append((new_row, new_col))
+            elif casilla.startswith('w'):  
+                moves.append((new_row, new_col))
+                break  
+            else:  
+                break  
+
+            new_row += dir[0]
+            new_col += dir[1]
+
+    return moves
+
+
+
 
 
 
@@ -320,6 +377,14 @@ def main():
                     if piece == 'bn':
                         selected = (row, col)
                         valid_moves = MovesforBlackshorse(board, row, col)               
+                        
+                    if piece == 'wb':
+                        selected = (row, col)
+                        valid_moves = MovesforWhitesbishop(board, row, col) 
+                        
+                    if piece == 'bb':
+                        selected = (row, col)
+                        valid_moves = MovesforBlacksbishop(board, row, col)               
                         
 
     pygame.quit()
