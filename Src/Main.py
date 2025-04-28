@@ -372,6 +372,7 @@ def draw_valid_moves(win, moves):
 
 #Main logic of the game
 def main():
+    turn = 'w'  
     selected = None
     valid_moves = []
     run = True
@@ -398,14 +399,27 @@ def main():
                     piece = board[prev_row][prev_col]
 
                     if (row, col) in valid_moves:
-                        board[row][col] = piece
-                        board[prev_row][prev_col] = ''
+                        
+                        if piece.startswith(turn):  
+                        
+                            board[row][col] = piece
+                            board[prev_row][prev_col] = ''
+                            
+                            
+                            if turn == 'w':
+                                turn = 'b'
+                            else:
+                                turn = 'w'
                     
                     selected = None
                     valid_moves = []
 
                 elif board[row][col] != '':
                     piece = board[row][col]
+                    
+                    if (turn == 'w' and piece.startswith('w')) or (turn == 'b' and piece.startswith('b')):
+                        selected = (row, col)
+                    
                     if piece == 'wp':
                         selected = (row, col)
                         valid_moves = MovesforWhitespawn(board, row, col)
