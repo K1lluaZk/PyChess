@@ -281,13 +281,14 @@ def MovesforBlacksbishop(tablero, fila, columna):
 
     return moves
 
-
+#Function to get the valid moves for the piece wq
 def MovesforWhitesqueen(tablero, fila, columna):
     moves = []
     moves += MovesforWhitesbishop(tablero, fila, columna)
     moves += MovesforWhitesrook(tablero, fila, columna)
     return moves
 
+#Function to get the valid moves for the piece bq
 def MovesforBlacksqueen(tablero, fila, columna):
     moves = []
     moves += MovesforBlacksbishop(tablero, fila, columna)
@@ -295,8 +296,47 @@ def MovesforBlacksqueen(tablero, fila, columna):
     return moves
 
 
+#Function to get the valid moves for the piece wk
+def MovesforWhitesking(tablero, fila, columna):
+    moves = []
+    valid_moves = [
+        (-1, 0), (1, 0),  
+        (0, -1), (0, 1),   
+        (-1, -1), (-1, 1), 
+        (1, -1), (1, 1)    
+    ]
 
+    for dir in valid_moves:
+        new_row = fila + dir[0]
+        new_col = columna + dir[1]
 
+        if 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+
+            if casilla == '' or casilla.startswith('b'):
+                moves.append((new_row, new_col))
+    return moves
+
+#Function to get the valid moves for the piece bk
+def MovesforBlacksking(tablero, fila, columna):
+    moves = []
+    valid_moves = [
+        (-1, 0), (1, 0),  
+        (0, -1), (0, 1),   
+        (-1, -1), (-1, 1), 
+        (1, -1), (1, 1)    
+    ]
+
+    for dir in valid_moves:
+        new_row = fila + dir[0]
+        new_col = columna + dir[1]
+
+        if 0 <= new_row < 8 and 0 <= new_col < 8:
+            casilla = tablero[new_row][new_col]
+
+            if casilla == '' or casilla.startswith('w'):
+                moves.append((new_row, new_col))
+    return moves
 
 
 #Draw the chessboard
@@ -405,7 +445,16 @@ def main():
                     
                     if piece == 'bq':
                         selected = (row, col)
-                        valid_moves = MovesforBlacksqueen(board, row, col)           
+                        valid_moves = MovesforBlacksqueen(board, row, col)  
+                    
+                    if piece == 'wk':
+                        selected = (row, col)
+                        valid_moves = MovesforWhitesking(board, row, col) 
+                    
+                    if piece == 'bk':
+                        selected = (row, col)
+                        valid_moves = MovesforBlacksking(board, row, col)     
+                                 
 
     pygame.quit()
 
