@@ -367,6 +367,8 @@ def draw_valid_moves(win, moves):
         win.blit(surface, (col * SQUARE_SIZE, row * SQUARE_SIZE))
 
 
+
+#Ia moves a black piece
 def ia_mover_pieza_negra(tablero):
     piezas_movibles = []
 
@@ -401,6 +403,25 @@ def ia_mover_pieza_negra(tablero):
 
         tablero[dfila][dcol] = tablero[ofila][ocol]
         tablero[ofila][ocol] = ''
+
+def verifywinner(tablero):
+    kingwhite = False
+    kingblack = False
+
+    for fila in tablero:
+        for pieza in fila:
+            if pieza == 'wk':
+                kingwhite = True
+            elif pieza == 'bk':
+                kingblack = True
+
+    if not kingwhite:
+        return 'Black' 
+    elif not kingblack:
+        return 'White'  
+    else:
+        return None  
+
 
 #Main logic of the game
 def main():
@@ -438,10 +459,21 @@ def main():
 
                             if turn == 'w':
                                turn = 'b'
+                               
+                               winner = verifywinner(board)
+                               if winner:
+                                  print(f"¡{winner} gana!")
+                                  run = False
+                                  break
         
-                         
                                ia_mover_pieza_negra(board)
                                turn = 'w'
+                               
+                               winner = verifywinner(board)
+                               if winner:
+                                  print(f"¡{winner} gana!")
+                                  run = False
+                                  break
                     
                     selected = None
                     valid_moves = []
