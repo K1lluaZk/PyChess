@@ -1,6 +1,6 @@
 import pygame
 import os
-
+import random
 
 pygame.init()
 
@@ -363,12 +363,44 @@ def draw_pieces(win, board):
 def draw_valid_moves(win, moves):
     surface = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE), pygame.SRCALPHA)
     surface.fill(HIGHLIGHT)
-    for move in moves:
-        row, col = move
-        win.blit(surface, (col*SQUARE_SIZE, row*SQUARE_SIZE))               
-                
+    for row, col in moves:
+        win.blit(surface, (col * SQUARE_SIZE, row * SQUARE_SIZE))
 
 
+def ia_mover_pieza_negra(tablero):
+    piezas_movibles = []
+
+    for fila in range(8):
+        for columna in range(8):
+            pieza = tablero[fila][columna]
+            if pieza.startswith('b'):
+                if pieza == 'bp':
+                    moves = MovesforBlackspawn(tablero, fila, columna)
+                elif pieza == 'br':
+                    moves = MovesforBlacksrook(tablero, fila, columna)
+                elif pieza == 'bn':
+                    moves = MovesforBlackshorse(tablero, fila, columna)
+                elif pieza == 'bb':
+                    moves = MovesforBlacksbishop(tablero, fila, columna)
+                elif pieza == 'bq':
+                    moves = MovesforBlacksqueen(tablero, fila, columna)
+                elif pieza == 'bk':
+                    moves = MovesforBlacksking(tablero, fila, columna)
+                else:
+                    moves = []
+
+                if moves:
+                    piezas_movibles.append(((fila, columna), moves))
+
+    if piezas_movibles:
+        origen, posibles = random.choice(piezas_movibles)
+        destino = random.choice(posibles)
+
+        ofila, ocol = origen
+        dfila, dcol = destino
+
+        tablero[dfila][dcol] = tablero[ofila][ocol]
+        tablero[ofila][ocol] = ''
 
 #Main logic of the game
 def main():
@@ -401,15 +433,15 @@ def main():
                     if (row, col) in valid_moves:
                         
                         if piece.startswith(turn):  
-                        
                             board[row][col] = piece
                             board[prev_row][prev_col] = ''
-                            
-                            
+
                             if turn == 'w':
-                                turn = 'b'
-                            else:
-                                turn = 'w'
+                               turn = 'b'
+        
+                         
+                               ia_mover_pieza_negra(board)
+                               turn = 'w'
                     
                     selected = None
                     valid_moves = []
