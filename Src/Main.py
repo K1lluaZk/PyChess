@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 import copy
+import sys
 
 pygame.init()
 
@@ -451,7 +452,6 @@ def enjaque(board, color):
             break
 
     if rey_pos is None:
-       #print("¡White gana!" if color == 'b' else "¡Black gana!")
        return True   
 
     for row in range(8):
@@ -523,6 +523,23 @@ def promocionar_peon(tablero, fila, columna):
     elif pieza == 'bp' and fila == 7:
         tablero[fila][columna] = 'bq'  
 
+#Function to display the victory screen
+def mostrar_pantalla_victoria(ganador):
+   
+    WIN.fill((0, 0, 0)) 
+
+    fuente = pygame.font.SysFont('Arial', 60)
+    mensaje = f"¡{ganador} gana!"
+    texto = fuente.render(mensaje, True, (255, 255, 255))  
+
+    rect_texto = texto.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    WIN.blit(texto, rect_texto)
+
+    pygame.display.update()
+
+    pygame.time.delay(3000)
+    pygame.quit()
+    sys.exit()
 
 #Main logic of the game
 def main():
@@ -563,14 +580,14 @@ def main():
                                turn = 'b'
                                    
                                if enjaquemate(board, 'b'):
-                                  print("¡Jaque mate! Gana el blanco.")
+                                  mostrar_pantalla_victoria('Blanco')
                                   run = False
                                   break
         
                                ia_mover_pieza_negra(board)
                                
                                if enjaquemate(board, 'w'):
-                                  print("¡Jaque mate! Gana el negro.")
+                                  mostrar_pantalla_victoria('Negro')
                                   run = False
                                   break
                               
