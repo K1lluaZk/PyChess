@@ -515,6 +515,14 @@ def enjaquemate(board, color):
     return True  
 
 
+#Promote the pawn to queen when it reaches the last row
+def promocionar_peon(tablero, fila, columna):
+    pieza = tablero[fila][columna]
+    if pieza == 'wp' and fila == 0:
+        tablero[fila][columna] = 'wq' 
+    elif pieza == 'bp' and fila == 7:
+        tablero[fila][columna] = 'bq'  
+
 
 #Main logic of the game
 def main():
@@ -554,7 +562,6 @@ def main():
                             if turn == 'w':
                                turn = 'b'
                                    
-                              
                                if enjaquemate(board, 'b'):
                                   print("¡Jaque mate! Gana el blanco.")
                                   run = False
@@ -562,7 +569,6 @@ def main():
         
                                ia_mover_pieza_negra(board)
                                
-                              
                                if enjaquemate(board, 'w'):
                                   print("¡Jaque mate! Gana el negro.")
                                   run = False
@@ -584,10 +590,12 @@ def main():
                     if piece == 'wp':
                         selected = (row, col)
                         valid_moves = MovesforWhitespawn(board, row, col)
-
+                        promocionar_peon(board, row, col)
+                        
                     if piece == 'bp':
                         selected = (row, col)
                         valid_moves = MovesforBlackspawn(board, row, col)
+                        promocionar_peon(board, row, col)
                         
                     if piece == 'wr':
                         selected = (row, col)
