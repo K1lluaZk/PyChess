@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import copy
 
 pygame.init()
 
@@ -13,6 +14,8 @@ SQUARE_SIZE = WIDTH // COLS
 WHITE = (232, 235, 239)
 BLACK = (125, 135, 150)
 HIGHLIGHT = (0, 255, 0, 100) 
+
+
 
 #Create the display window
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -404,6 +407,10 @@ def ia_mover_pieza_negra(tablero):
         tablero[dfila][dcol] = tablero[ofila][ocol]
         tablero[ofila][ocol] = ''
 
+
+
+
+#Function to verify if a player has won
 def verifywinner(tablero):
     kingwhite = False
     kingblack = False
@@ -421,16 +428,103 @@ def verifywinner(tablero):
         return 'White'  
     else:
         return None  
+    
+
+#Function to check if the king is in check
+def enjaque(board, color):
+    if color == 'w':
+        rey = 'wk'
+        enemigo = 'b'
+    else:
+        rey = 'bk'
+        enemigo = 'w'
+
+    rey_pos = None
+
+    
+    for row in range(8):
+        for col in range(8):
+            if board[row][col] == rey:
+                rey_pos = (row, col)
+                break
+        if rey_pos:  
+            break
+
+    if rey_pos is None:
+       #print("¡White gana!" if color == 'b' else "¡Black gana!")
+       return True   
+
+    for row in range(8):
+        for col in range(8):
+            pieza = board[row][col]
+            if pieza.startswith(enemigo):
+                moves = getmoves(board, row, col, pieza)
+                if rey_pos in moves:
+                    return True
+
+    return False
+
+
+def getmoves(board, row, col, piece):
+    if piece == 'wp':
+        return MovesforWhitespawn(board, row, col)
+    if piece == 'bp':
+        return MovesforBlackspawn(board, row, col)
+    if piece == 'wr':
+        return MovesforWhitesrook(board, row, col)
+    if piece == 'br':
+        return MovesforBlacksrook(board, row, col)
+    if piece == 'wn':
+        return MovesforWhiteshorse(board, row, col)
+    if piece == 'bn':
+        return MovesforBlackshorse(board, row, col)
+    if piece == 'wb':
+        return MovesforWhitesbishop(board, row, col)
+    if piece == 'bb':
+        return MovesforBlacksbishop(board, row, col)
+    if piece == 'wq':
+        return MovesforWhitesqueen(board, row, col)
+    if piece == 'bq':
+        return MovesforBlacksqueen(board, row, col)
+    if piece == 'wk':
+        return MovesforWhitesking(board, row, col)
+    if piece == 'bk':
+        return MovesforBlacksking(board, row, col)
+    return []
+
+
+def enjaquemate(board, color):
+    if not enjaque(board, color):
+        return False
+
+    for row in range(8):
+        for col in range(8):
+            pieza = board[row][col]
+            if pieza.startswith(color):
+                moves = getmoves(board, row, col, pieza)
+
+                for move in moves:
+                    temp_board = copy.deepcopy(board)
+                    new_row, new_col = move
+                    temp_board[new_row][new_col] = pieza
+                    temp_board[row][col] = ''
+
+                    if not enjaque(temp_board, color):
+                        return False  
+
+    return True  
+
 
 
 #Main logic of the game
 def main():
+
     turn = 'w'  
     selected = None
     valid_moves = []
     run = True
     clock = pygame.time.Clock()
-
+    
     while run:
         clock.tick(60)
         draw_board(WIN)
@@ -459,21 +553,24 @@ def main():
 
                             if turn == 'w':
                                turn = 'b'
-                               
-                               winner = verifywinner(board)
-                               if winner:
-                                  print(f"¡{winner} gana!")
+                                   
+                              
+                               if enjaquemate(board, 'b'):
+                                  print("¡Jaque mate! Gana el blanco.")
                                   run = False
                                   break
         
                                ia_mover_pieza_negra(board)
-                               turn = 'w'
                                
-                               winner = verifywinner(board)
-                               if winner:
-                                  print(f"¡{winner} gana!")
+                              
+                               if enjaquemate(board, 'w'):
+                                  print("¡Jaque mate! Gana el negro.")
                                   run = False
                                   break
+                              
+                               turn = 'w'
+                              
+                              
                     
                     selected = None
                     valid_moves = []
@@ -491,7 +588,6 @@ def main():
                     if piece == 'bp':
                         selected = (row, col)
                         valid_moves = MovesforBlackspawn(board, row, col)
-                        
                         
                     if piece == 'wr':
                         selected = (row, col)
