@@ -21,7 +21,7 @@ Clone this repository:
 bash
 Copy
 Edit
-git clone https://github.com/your_user/pychess.git
+git clone https://github.com/K1lluaZk/pychess.git
 cd pychess
 Install the necessary dependencies:
 Reddit
